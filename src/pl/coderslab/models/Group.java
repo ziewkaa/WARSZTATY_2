@@ -11,6 +11,10 @@ public class Group {
 	protected int id;
 	protected String name;
 	
+	public Group (String name) {
+		this.name = name;
+	}
+	
 	public Group () {
 		
 	}
