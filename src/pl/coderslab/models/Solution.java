@@ -13,6 +13,8 @@ public class Solution {
 	protected Date created;
 	protected Date updated;
 	protected String description;
+	protected int exercise_id;
+	protected int user_id;
 	
 	public Solution () {
 		
@@ -21,26 +23,30 @@ public class Solution {
 	public void saveToDB(Connection conn) throws SQLException {
 		
 		if (this.id == 0) {
-			String sql = "INSERT INTO Solutions (created, updated, description) VALUES (?, ?, ?)";
+			String sql = "INSERT INTO Solutions (created, updated, description, exercise_id, user_id) VALUES (?, ?, ?, ?, ?)";
 			String generatedColumns[] = { "ID" };
 			PreparedStatement preparedStatement;
 			preparedStatement = conn.prepareStatement(sql, generatedColumns);
 			preparedStatement.setDate(1, this.created);
 			preparedStatement.setDate(2, this.updated);
 			preparedStatement.setString(3, this.description);
+			preparedStatement.setInt(4, this.exercise_id);
+			preparedStatement.setInt(5, this.user_id);
 			preparedStatement.executeUpdate();
 			ResultSet rs = preparedStatement.getGeneratedKeys();
 			if (rs.next()) {
 				this.id = rs.getInt(1);
 			} 
 		} else {
-			String sql2 = "UPDATE Solutions SET created=?, updated=?, description=? WHERE id = ?";
+			String sql2 = "UPDATE Solutions SET created=?, updated=?, description=?, exercise_id = ?, user_id = ? WHERE id = ?";
 			PreparedStatement preparedStatement2;
 			preparedStatement2 = conn.prepareStatement(sql2);
 			preparedStatement2.setDate(1, this.created);
 			preparedStatement2.setDate(2, this.updated);
 			preparedStatement2.setString(3, this.description);
-			preparedStatement2.setInt(4, this.id);
+			preparedStatement2.setInt(4, this.exercise_id);
+			preparedStatement2.setInt(5, this.user_id);
+			preparedStatement2.setInt(6, this.id);
 			preparedStatement2.executeUpdate();		
 		}
 	}
@@ -66,7 +72,8 @@ public class Solution {
 	static public Solution[] loadAllSolutions(Connection conn) throws SQLException {
 		
 		ArrayList<Solution> solutions = new ArrayList<Solution>();
-		String sql = "SELECT * FROM Solutions"; PreparedStatement preparedStatement;
+		String sql = "SELECT * FROM Solutions"; 
+		PreparedStatement preparedStatement;
 		preparedStatement = conn.prepareStatement(sql);
 		ResultSet resultSet = preparedStatement.executeQuery();
 		while (resultSet.next()) {
@@ -107,7 +114,7 @@ public class Solution {
 	 public Solution[] loadAllSolutionsByExerciseId (Connection conn, int id) throws SQLException {
 			
 			ArrayList<Solution> solutions = new ArrayList<Solution>();
-			String sql = "SELECT * FROM Solutions WHERE exercise_id = ?"; 
+			String sql = "SELECT * FROM Solutions WHERE exercise_id = ? ORDER BY updated DESC"; 
 			PreparedStatement preparedStatement;
 			preparedStatement = conn.prepareStatement(sql);
 			preparedStatement.setInt(1, this.id);
@@ -152,6 +159,14 @@ public class Solution {
 	public String getDescription() {
 		return description;
 	}
+	
+	public int getExercise_id() {
+		return exercise_id;
+	}
+
+	public int getUser_id() {
+		return user_id;
+	}
 
 	public void setCreated(Date created) {
 		this.created = created;
@@ -163,6 +178,14 @@ public class Solution {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+	
+	public void setExercise_id(int exercise_id) {
+		this.exercise_id = exercise_id;
+	}
+
+	public void setUser_id(int user_id) {
+		this.user_id = user_id;
 	}
 
 }

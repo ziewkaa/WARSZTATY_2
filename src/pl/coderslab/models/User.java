@@ -12,12 +12,14 @@ public class User {
 	protected String username;
 	protected String password;
 	protected String email;
+	private int user_group_id;
 	
-	public User (String username, String email, String password) {
+	public User (String username, String email, String password, int user_group_id) {
 		this.username = username;
 		this.email = email;
 		this.setPassword(password);
-		
+		this.user_group_id = user_group_id;
+
 	}
 	
 	public User() {
@@ -27,26 +29,28 @@ public class User {
 	public void saveToDB(Connection conn) throws SQLException {
 		
 		if (this.id == 0) {
-			String sql = "INSERT INTO Users(username, email, password) VALUES (?, ?, ?)";
+			String sql = "INSERT INTO Users(username, email, password, user_group_id ) VALUES (?, ?, ?, ?)";
 			String generatedColumns[] = { "ID" };
 			PreparedStatement preparedStatement;
 			preparedStatement = conn.prepareStatement(sql, generatedColumns);
 			preparedStatement.setString(1, this.username);
 			preparedStatement.setString(2, this.email);
 			preparedStatement.setString(3, this.password);
+			preparedStatement.setInt(4, this.user_group_id);
 			preparedStatement.executeUpdate();
 			ResultSet rs = preparedStatement.getGeneratedKeys();
 			if (rs.next()) {
 				this.id = rs.getInt(1);
 			} 
 		} else {
-			String sql2 = "UPDATE Users SET username=?, email=?, password=? where id = ?";
+			String sql2 = "UPDATE Users SET username=?, email=?, password=? , user_group_id = ? where id = ?";
 			PreparedStatement preparedStatement2;
 			preparedStatement2 = conn.prepareStatement(sql2);
 			preparedStatement2.setString(1, this.username);
 			preparedStatement2.setString(2, this.email);
 			preparedStatement2.setString(3, this.password);
-			preparedStatement2.setInt(4, this.id);
+			preparedStatement2.setInt(4, this.user_group_id);
+			preparedStatement2.setInt(5, this.id);
 			preparedStatement2.executeUpdate();		
 		}
 	}
@@ -146,6 +150,14 @@ public class User {
 	
 	public void setEmail(String email) {
 		this.email = email;
+	}
+	
+	public int getGroup() {
+		return user_group_id;
+	}
+	
+	public void setGroup(int user_group_id) {
+		this.user_group_id = user_group_id;
 	}
 	
 }

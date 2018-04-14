@@ -9,8 +9,8 @@ import java.util.ArrayList;
 public class Exercise {
 	
 	protected int id;
-	protected String title;
-	protected String description;
+	private String title;
+	private String description;
 	
 	public Exercise () {
 		
@@ -31,7 +31,7 @@ public class Exercise {
 				this.id = rs.getInt(1);
 			} 
 		} else {
-			String sql2 = "UPDATE Exercises SET title = ?, description = ?, where id = ?";
+			String sql2 = "UPDATE Exercises SET title = ?, description = ? where id = ?";
 			PreparedStatement preparedStatement2;
 			preparedStatement2 = conn.prepareStatement(sql2);
 			preparedStatement2.setString(1, this.title);
@@ -61,7 +61,8 @@ public class Exercise {
 	static public Exercise[] loadAllExcercises(Connection conn) throws SQLException {
 		
 		ArrayList<Exercise> exercises = new ArrayList<Exercise>();
-		String sql = "SELECT * FROM Exercises"; PreparedStatement preparedStatement;
+		String sql = "SELECT * FROM Exercises"; 
+		PreparedStatement preparedStatement;
 		preparedStatement = conn.prepareStatement(sql);
 		ResultSet resultSet = preparedStatement.executeQuery();
 		while (resultSet.next()) {
