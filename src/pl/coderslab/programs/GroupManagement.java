@@ -1,9 +1,8 @@
-package pl.coderslab;
+package pl.coderslab.programs;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.Scanner;
 
 import pl.coderslab.models.Group;
@@ -25,28 +24,38 @@ public class GroupManagement {
 				
 				answer = scan.nextLine();
 			
-				switch (answer) {
+				switch (answer.toLowerCase()) {
 				case "add" : 
+					showGroups(conn);
 					System.out.println("Type new Group name");
 					String name = scan.nextLine();
 					Group newGroup = new Group(name);
 					newGroup.saveToDB(conn);
 					showGroups(conn);
-					System.out.println("New Group was added to the database,  what would you like to do next?");
+					System.out.println("New Group was added to the database, what would you like to do next?");
+					System.out.println("Type: add , edit, delete or quit");
 					break;
 				case "edit" :
 					System.out.println("Type id of chosen Group");
-					String id = scan.nextLine();
-					Group toUpdate = Group.loadGroupById(conn, Integer.parseInt(id));
+					int idToEdit; 
+					checkIfInt(scan);
+					idToEdit = Integer.parseInt(scan.nextLine());
+					idToEdit = checkGroupInDatabase(conn ,scan, idToEdit);
+					Group toUpdate = Group.loadGroupById(conn, idToEdit);
 					System.out.println("Type new Group name");
 					toUpdate.setName(scan.nextLine());
 					toUpdate.saveToDB(conn);
 					showGroups(conn);
 					System.out.println("Chosen Group was edited,  what would you like to do next?");
+					System.out.println("Type: add , edit, delete or quit");
 					break;
 				case "delete" :
 					System.out.println("Type id of chosen Group");
-					Group toDelete = Group.loadGroupById(conn, scan.nextInt());
+					int idToDelete;
+					checkIfInt(scan);
+					idToDelete = Integer.parseInt(scan.nextLine());
+					idToDelete = checkGroupInDatabase(conn ,scan, idToDelete);
+					Group toDelete = Group.loadGroupById(conn, idToDelete);
 					toDelete.delete(conn);
 					showGroups(conn);
 					System.out.println("Chosen Group was deleted, what would you like to do next?");
@@ -55,13 +64,12 @@ public class GroupManagement {
 					shouldContinue = false;
 					break;
 				default :
-					System.out.println("Incorrect values, try again");
+					System.out.println("Incorrect value, try again");
 				}
 			}
 			System.out.println("Bye!");
 			conn.close();
 			scan.close();
-			
 			
 		} catch ( Exception e) {
 			System.out.println(e.getLocalizedMessage());
@@ -75,6 +83,20 @@ public class GroupManagement {
 		}
 	}
 	
-	
+	private static void checkIfInt(Scanner scan) {
+		while (!scan.hasNextInt()) {
+			System.out.println("Incorrect value, please type a number");
+			scan.nextLine();
+		}
+	}
+	private static int checkGroupInDatabase(Connection conn, Scanner scan, int id) throws SQLException {
+		while (Group.loadGroupById(conn, id) == null ) {
+			System.out.println("No such Group in the databse");
+			showGroups(conn);
+			System.out.println("Please type again the id of chosen Group");
+			id = Integer.parseInt(scan.nextLine());
+		}
+		return id;
+	}
 
 }
