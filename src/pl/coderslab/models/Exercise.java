@@ -79,7 +79,6 @@ public class Exercise {
 			Exercise[] eArray = new Exercise[exercises.size()];
 			eArray = exercises.toArray(eArray);
 			return eArray;
-		
 	}
 	
 	public void delete(Connection conn) throws SQLException {
