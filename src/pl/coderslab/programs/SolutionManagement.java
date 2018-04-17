@@ -93,7 +93,7 @@ public class SolutionManagement {
 		return id;
 	}
 
-	private static void showSolutionsForUser(Connection conn, int id) throws SQLException {
+	public static void showSolutionsForUser(Connection conn, int id) throws SQLException {
 		if (Solution.loadAllSolutionsByUserId(conn, id).length == 0) {
 			System.out.println("No solutions for this User");
 		} else {

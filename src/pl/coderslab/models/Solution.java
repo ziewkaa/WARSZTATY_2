@@ -32,6 +32,15 @@ public class Solution {
 		
 	}
 
+	public Solution(int user_id, int exercise_id, String description, Date updated) {
+		
+		this.user_id = user_id;
+		this.exercise_id = exercise_id;
+		this.description = description;
+		this.updated = updated;
+		
+	}
+	
 	public void saveToDB(Connection conn) throws SQLException {
 		
 		if (this.id == 0) {
